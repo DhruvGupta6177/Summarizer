@@ -72,7 +72,7 @@ export default function AnalysisPage() {
     });
 
     setLoading(false);
-    if (result.success && result.data) {
+    if (result.success) {
       setAnalysisResult(result.data);
       toast({
         title: "Analysis Complete",

@@ -85,7 +85,7 @@ export default function ComparePage() {
     });
 
     setLoading(false);
-    if (result.success && result.data) {
+    if (result.success) {
       setComparisonResult(result.data);
       toast({
         title: "Comparison Complete",

@@ -71,7 +71,7 @@ export default function MindMapPage() {
     });
 
     setLoading(false);
-    if (result.success && result.data) {
+    if (result.success) {
       setMindMapData(result.data);
       toast({
         title: "Mind Map Generated",

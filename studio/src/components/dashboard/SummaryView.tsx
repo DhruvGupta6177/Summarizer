@@ -77,7 +77,7 @@ export function SummaryView({ document }: { document: DocumentData }) {
     });
     setLoading(false);
 
-    if (result.success && result.data) {
+    if (result.success) {
       setSummary({
         ...result.data,
         audience: values.audience,
@@ -138,7 +138,7 @@ export function SummaryView({ document }: { document: DocumentData }) {
     const result = await generateAudioSummaryAction({ text: summary.summary.join("\n") });
 
     setIsGeneratingAudio(false);
-    if (result.success && result.data) {
+    if (result.success) {
       setAudioSrc(result.data.audioDataUri);
     } else {
       toast({

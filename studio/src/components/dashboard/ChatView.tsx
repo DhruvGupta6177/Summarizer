@@ -21,6 +21,25 @@ import { useToast } from '@/hooks/use-toast';
 import { DocumentData } from '@/lib/types';
 import { useUser } from '@/firebase';
 
+type SpeechRecognitionEvent = {
+  results: ArrayLike<ArrayLike<{ transcript: string }>>;
+};
+
+type SpeechRecognitionErrorEvent = {
+  error: string;
+};
+
+interface SpeechRecognitionInstance {
+  continuous: boolean;
+  interimResults: boolean;
+  lang: string;
+  onresult: ((event: SpeechRecognitionEvent) => void) | null;
+  onerror: ((event: SpeechRecognitionErrorEvent) => void) | null;
+  onend: (() => void) | null;
+  start: () => void;
+  stop: () => void;
+}
+
 interface ChatMessage {
   role: 'user' | 'assistant';
   content: string;
@@ -32,8 +51,8 @@ const formSchema = z.object({
 
 declare global {
   interface Window {
-    SpeechRecognition: typeof SpeechRecognition;
-    webkitSpeechRecognition: typeof SpeechRecognition;
+    SpeechRecognition?: new () => SpeechRecognitionInstance;
+    webkitSpeechRecognition?: new () => SpeechRecognitionInstance;
   }
 }
 
@@ -46,7 +65,7 @@ export function ChatView({ document }: { document: DocumentData }) {
 
   const { user } = useUser();
   const { toast } = useToast();
-  const recognitionRef = useRef<SpeechRecognition | null>(null);
+  const recognitionRef = useRef<SpeechRecognitionInstance | null>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -64,7 +83,7 @@ export function ChatView({ document }: { document: DocumentData }) {
       const result = await generateSuggestedQuestionsAction({
         documentText: document.text,
       });
-      if (result.success && result.data) {
+      if (result.success) {
         setSuggestedQuestions(result.data.questions);
       } else {
         console.error("Failed to fetch suggestions:", result.error);
@@ -89,7 +108,7 @@ export function ChatView({ document }: { document: DocumentData }) {
       });
 
       setLoading(false);
-      if (result.success && result.data) {
+      if (result.success) {
         const assistantMessage: ChatMessage = {
           role: 'assistant',
           content: result.data.answer,
