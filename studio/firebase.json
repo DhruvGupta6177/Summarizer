@@ -6,3 +6,10 @@
     "indexes": "firestore.indexes.json"
   }
 }
+
+
+
+For more information about this file see https://firebase.google.com/docs/cli#configuration-files    
+
+
+The firebase.json file is used to configure the behavior of the Firebase CLI tools. It specifies settings for various Firebase services, such as Firestore, Hosting, Functions, and more. In this example, the configuration is for Firestore, indicating the database to use, its location, and the paths to the rules and indexes files.
